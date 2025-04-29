@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NumPy Cheat Sheet - GitHub Theme</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    :root {
+        /* Light theme (default) */
+        --color-text-primary: #24292f;
+        --color-text-secondary: #57606a;
+        --color-border-default: #d0d7de;
+        --color-border-muted: #d8dee4;
+        --color-neutral-muted: #f6f8fa;
+        --color-accent-fg: #0969da;
+        --color-accent-emphasis: #0969da;
+        --color-success-fg: #1a7f37;
+        --color-attention-fg: #9a6700;
+        --color-danger-fg: #cf222e;
+        --color-done-fg: #8250df;
+        --color-canvas-default: #ffffff;
+        --color-canvas-subtle: #f6f8fa;
+        --color-header-bg: #f6f8fa;
+        --color-btn-bg: #f6f8fa;
+        --color-btn-hover-bg: #f3f4f6;
+        --color-btn-active-bg: #ebecf0;
+        --color-code-bg: #f6f8fa;
+    }
+    
+    [data-theme="dark"] {
+        /* Dark theme */
+        --color-text-primary: #e6edf3;
+        --color-text-secondary: #8b949e;
+        --color-border-default: #30363d;
+        --color-border-muted: #21262d;
+        --color-neutral-muted: #161b22;
+        --color-accent-fg: #58a6ff;
+        --color-accent-emphasis: #1f6feb;
+        --color-success-fg: #3fb950;
+        --color-attention-fg: #d29922;
+        --color-danger-fg: #f85149;
+        --color-done-fg: #a371f7;
+        --color-canvas-default: #0d1117;
+        --color-canvas-subtle: #161b22;
+        --color-header-bg: #161b22;
+        --color-btn-bg: #21262d;
+        --color-btn-hover-bg: #30363d;
+        --color-btn-active-bg: #282e33;
+        --color-code-bg: #161b22;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        background-color: var(--color-canvas-default);
+        color: var(--color-text-primary);
+        line-height: 1.6;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .header {
+        background-color: var(--color-canvas-subtle);
+        border-bottom: 1px solid var(--color-border-default);
+        padding: 2rem 0;
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .header h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--color-text-primary);
+    }
+    
+    .header p {
+        font-size: 1.2rem;
+        color: var(--color-text-secondary);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .theme-switch-wrapper {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+    
+    .theme-switch {
+        display: inline-block;
+        height: 34px;
+        width: 60px;
+        position: relative;
+    }
+    
+    .theme-switch input {
+        display: none;
+    }
+    
+    .slider {
+        background-color: #ccc;
+        bottom: 0;
+        cursor: pointer;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    
+    .slider:before {
+        background-color: white;
+        bottom: 4px;
+        content: "";
+        height: 26px;
+        left: 4px;
+        position: absolute;
+        transition: .4s;
+        width: 26px;
+        border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+        background-color: var(--color-accent-emphasis);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(26px);
+    }
+    
+    .toggle-icon {
+        position: absolute;
+        top: 8px;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .toggle-icon.sun {
+        left: 8px;
+        opacity: 1;
+        color: #f8e71c;
+    }
+    
+    .toggle-icon.moon {
+        right: 8px;
+        opacity: 1;
+        color: #ffffff;
+    }
+    
+    input:checked + .slider .toggle-icon.sun {
+        opacity: 0;
+    }
+    
+    input:not(:checked) + .slider .toggle-icon.moon {
+        opacity: 0;
+    }
+    
+    .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+    
+    .section {
+        background: var(--color-canvas-default);
+        border: 1px solid var(--color-border-default);
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .section-header {
+        padding: 1rem 1.25rem;
+        background: var(--color-canvas-subtle);
+        border-bottom: 1px solid var(--color-border-default);
+    }
+    
+    .section-header h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--color-text-primary);
+    }
+    
+    .section-description {
+        padding: 0.75rem 1.25rem;
+        background-color: var(--color-canvas-default);
+        border-bottom: 1px solid var(--color-border-muted);
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+    }
+    
+    .section-body {
+        padding: 1.25rem;
+        position: relative;
+    }
+    
+    .code-container {
+        position: relative;
+    }
+    
+    .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: var(--color-btn-bg);
+        border: 1px solid var(--color-border-default);
+        border-radius: 6px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+        transition: all 0.2s;
+        z-index: 10;
+    }
+    
+    .copy-btn:hover {
+        background: var(--color-btn-hover-bg);
+        border-color: var(--color-border-muted);
+    }
+    
+    .copy-btn:active {
+        background: var(--color-btn-active-bg);
+        transform: scale(0.98);
+    }
+    
+    .copy-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--color-text-secondary);
+    }
+    
+    pre {
+        background-color: var(--color-code-bg);
+        border: 1px solid var(--color-border-default);
+        border-radius: 6px;
+        padding: 1rem;
+        overflow-x: auto;
+        margin-bottom: 0;
+        position: relative;
+    }
+    
+    code {
+        font-family: 'JetBrains Mono', SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: var(--color-text-primary);
+    }
+    
+    .comment {
+        color: var(--color-text-secondary);
+        font-style: italic;
+    }
+    
+    .footer {
+        text-align: center;
+        background: var(--color-canvas-subtle);
+        color: var(--color-text-primary);
+        padding: 2rem 0;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--color-border-default);
+        border-radius: 6px;
+    }
+    
+    .footer h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .footer p {
+        color: var(--color-text-secondary);
+    }
+    
+    /* GitHub-style markdown link */
+    a {
+        color: var(--color-accent-fg);
+        text-decoration: none;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 2rem;
+            padding-top: 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.1rem;
+        }
+        
+        .theme-switch-wrapper {
+            position: static;
+            text-align: center;
+            margin-top: 1rem;
+        }
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Dark mode toggle
+        const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Set initial theme from localStorage
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            toggleSwitch.checked = true;
+        }
+        
+        // Function to switch theme
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        toggleSwitch.addEventListener('change', switchTheme, false);
+        
+        // Copy buttons functionality
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const codeBlock = this.parentElement.querySelector('code');
+                const textToCopy = codeBlock.textContent;
+                
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        // Change icon to checkmark temporarily
+                        const icon = this.querySelector('.copy-icon');
+                        const originalSvg = icon.innerHTML;
+                        icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                        
+                        setTimeout(() => {
+                            icon.innerHTML = originalSvg;
+                        }, 1500);
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+            });
+        });
+    });
+</script>
+</head>
+<body>
+
+<div class="header">
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox">
+            <div class="slider">
+                <span class="toggle-icon sun">☀️</span>
+                <span class="toggle-icon moon">🌙</span>
+            </div>
+        </label>
+    </div>
+    <h1>Ultimate NumPy Cheat Sheet</h1>
+    <p>A comprehensive guide to NumPy functions and operations for data analysis and scientific computing</p>
+</div>
+
+<div class="container">
+    <div class="section">
+        <div class="section-header">
+            <h2>Basics</h2>
+        </div>
+        <div class="section-description">
+            The fundamental functions to get started with NumPy arrays, including creation methods and basic operations.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>import numpy as np                    <span class="comment"># Import the NumPy library</span>
+np.array([1, 2, 3])                <span class="comment"># Create a 1D array</span>
+np.zeros((2, 3))                   <span class="comment"># Create a 2x3 array of zeros</span>
+np.ones((2, 3))                    <span class="comment"># Create a 2x3 array of ones</span>
+np.full((2, 3), 7)                 <span class="comment"># Create a 2x3 array filled with 7s</span>
+np.eye(3)                          <span class="comment"># Create a 3x3 identity matrix</span>
+np.arange(0, 10, 2)                <span class="comment"># Create array with values 0,2,4,6,8</span>
+np.linspace(0, 1, 5)               <span class="comment"># Create array with 5 evenly spaced values from 0 to 1</span>
+np.random.rand(2, 3)               <span class="comment"># Create a 2x3 array with random values (0-1)</span>
+np.random.randn(2, 3)              <span class="comment"># Create a 2x3 array with random values from standard normal distribution</span>
+np.random.randint(0, 10, (2, 3))   <span class="comment"># Create a 2x3 array with random integers from 0 to 9</span>
+np.empty((2, 3))                   <span class="comment"># Create an uninitialized 2x3 array</span>
+np.copy(arr)                       <span class="comment"># Create a copy of an array</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Array Attributes</h2>
+        </div>
+        <div class="section-description">
+            Properties and methods to access information about NumPy arrays such as shape, size, and data type.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr.shape        <span class="comment"># Dimensions of the array (rows, columns)</span>
+arr.ndim         <span class="comment"># Number of dimensions</span>
+arr.size         <span class="comment"># Total number of elements</span>
+arr.dtype        <span class="comment"># Data type of elements</span>
+arr.itemsize     <span class="comment"># Size in bytes of each element</span>
+arr.nbytes       <span class="comment"># Total size in bytes of the array</span>
+arr.T            <span class="comment"># Transpose of the array</span>
+arr.real         <span class="comment"># Real part of complex array</span>
+arr.imag         <span class="comment"># Imaginary part of complex array</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Indexing, Slicing, Iterating</h2>
+        </div>
+        <div class="section-description">
+            Methods to access and manipulate specific elements or subsets of arrays, including advanced indexing techniques.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr[1]                  <span class="comment"># Get second element (0-indexed)</span>
+arr[1:4]                <span class="comment"># Get elements from index 1 to 3</span>
+arr[:, 0]               <span class="comment"># Get first column</span>
+arr[1, 2]               <span class="comment"># Get element at row 1, column 2</span>
+arr[-1]                 <span class="comment"># Get last element</span>
+arr[::2]                <span class="comment"># Get every other element</span>
+arr[::-1]               <span class="comment"># Get all elements in reverse order</span>
+arr[1, ::2]             <span class="comment"># Get every other element from the second row</span>
+arr[..., 1]             <span class="comment"># Get second column using ellipsis notation</span>
+np.take(arr, [0, 2])    <span class="comment"># Take elements at indices 0 and 2</span>
+np.put(arr, [0, 2], [9, 9])  <span class="comment"># Put values 9 at indices 0 and 2</span>
+for x in np.nditer(arr):     <span class="comment"># Iterate through all elements</span>
+    print(x)</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Data Types</h2>
+        </div>
+        <div class="section-description">
+            NumPy supports various data types for efficient memory usage and computation, allowing precise control over data representation.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr.astype(float)       <span class="comment"># Convert array to float type</span>
+np.int32                <span class="comment"># 32-bit integer type</span>
+np.int64                <span class="comment"># 64-bit integer type</span>
+np.float32              <span class="comment"># 32-bit floating point type</span>
+np.float64              <span class="comment"># 64-bit floating point type</span>
+np.bool_                <span class="comment"># Boolean type</span>
+np.complex_             <span class="comment"># Complex number type</span>
+np.dtype('int32')       <span class="comment"># Create a data type object</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Math Operations</h2>
+        </div>
+        <div class="section-description">
+            Perform element-wise mathematical operations on arrays, including arithmetic, trigonometric, and exponential functions.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr + 5                    <span class="comment"># Add 5 to each element</span>
+arr - 5                    <span class="comment"># Subtract 5 from each element</span>
+arr * 2                    <span class="comment"># Multiply each element by 2</span>
+arr / 2                    <span class="comment"># Divide each element by 2</span>
+arr ** 2                   <span class="comment"># Square each element</span>
+np.add(arr1, arr2)         <span class="comment"># Element-wise addition</span>
+np.subtract(arr1, arr2)    <span class="comment"># Element-wise subtraction</span>
+np.multiply(arr1, arr2)    <span class="comment"># Element-wise multiplication</span>
+np.divide(arr1, arr2)      <span class="comment"># Element-wise division</span>
+np.mod(arr1, arr2)         <span class="comment"># Element-wise modulus</span>
+np.remainder(arr1, arr2)   <span class="comment"># Element-wise remainder</span>
+np.exp(arr)                <span class="comment"># e raised to power of each element</span>
+np.sqrt(arr)               <span class="comment"># Square root of each element</span>
+np.log(arr)                <span class="comment"># Natural logarithm of each element</span>
+np.log10(arr)              <span class="comment"># Base-10 logarithm of each element</span>
+np.sin(arr)                <span class="comment"># Sine of each element</span>
+np.cos(arr)                <span class="comment"># Cosine of each element</span>
+np.tan(arr)                <span class="comment"># Tangent of each element</span>
+np.arcsin(arr)             <span class="comment"># Inverse sine of each element</span>
+np.arccos(arr)             <span class="comment"># Inverse cosine of each element</span>
+np.arctan(arr)             <span class="comment"># Inverse tangent of each element</span>
+np.radians(arr)            <span class="comment"># Convert degrees to radians</span>
+np.degrees(arr)            <span class="comment"># Convert radians to degrees</span>
+np.clip(arr, a_min, a_max) <span class="comment"># Clip values between a_min and a_max</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Aggregation Functions</h2>
+        </div>
+        <div class="section-description">
+            Functions to compute summary statistics and aggregate data across arrays, such as mean, sum, minimum, and maximum.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.sum(arr)             <span class="comment"># Sum of all elements</span>
+np.mean(arr)            <span class="comment"># Mean of all elements</span>
+np.std(arr)             <span class="comment"># Standard deviation</span>
+np.var(arr)             <span class="comment"># Variance</span>
+np.min(arr)             <span class="comment"># Minimum value</span>
+np.max(arr)             <span class="comment"># Maximum value</span>
+np.argmin(arr)          <span class="comment"># Index of minimum value</span>
+np.argmax(arr)          <span class="comment"># Index of maximum value</span>
+np.ptp(arr)             <span class="comment"># Range of values (max - min)</span>
+np.percentile(arr, 50)  <span class="comment"># 50th percentile (median)</span>
+np.median(arr)          <span class="comment"># Median value</span>
+np.cumsum(arr)          <span class="comment"># Cumulative sum</span>
+np.cumprod(arr)         <span class="comment"># Cumulative product</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Broadcasting</h2>
+        </div>
+        <div class="section-description">
+            NumPy's broadcasting mechanism allows operations between arrays of different shapes, automatically expanding dimensions when needed.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr + 5                    <span class="comment"># Add 5 to each element</span>
+arr + np.array([1, 2, 3])   <span class="comment"># Add corresponding values from array [1,2,3] to each row</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Logical Operations</h2>
+        </div>
+        <div class="section-description">
+            Functions to perform logical operations on arrays, including comparison, boolean operations, and condition testing.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr > 0                             <span class="comment"># Return boolean array for condition</span>
+arr == 5                            <span class="comment"># Check equality for each element</span>
+np.where(arr>0, arr, 0)             <span class="comment"># Return arr where condition is True, else 0</span>
+np.any(arr > 0)                     <span class="comment"># True if any element satisfies condition</span>
+np.all(arr > 0)                     <span class="comment"># True if all elements satisfy condition</span>
+np.logical_and(arr1 > 0, arr2 > 0)  <span class="comment"># Element-wise AND of two conditions</span>
+np.logical_or(arr1 > 0, arr2 < 0)   <span class="comment"># Element-wise OR of two conditions</span>
+np.logical_not(arr)                 <span class="comment"># Element-wise NOT (inverting boolean array)</span>
+np.isfinite(arr)                    <span class="comment"># Test which elements are finite</span>
+np.isnan(arr)                       <span class="comment"># Test which elements are NaN</span>
+np.isinf(arr)                       <span class="comment"># Test which elements are infinite</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Sorting, Searching, Counting</h2>
+        </div>
+        <div class="section-description">
+            Functions to sort and search arrays, find unique values, and perform set operations between arrays.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.sort(arr)                 <span class="comment"># Return sorted copy of array</span>
+np.argsort(arr)              <span class="comment"># Return indices that would sort array</span>
+np.lexsort((arr1, arr2))     <span class="comment"># Sort by multiple keys (arr2, then arr1)</span>
+np.searchsorted(arr, 5)      <span class="comment"># Find indices where elements should be inserted to maintain order</span>
+np.count_nonzero(arr)        <span class="comment"># Count non-zero elements</span>
+np.unique(arr)               <span class="comment"># Return sorted unique elements</span>
+np.in1d(arr1, arr2)          <span class="comment"># Test whether elements in arr1 are in arr2</span>
+np.intersect1d(arr1, arr2)   <span class="comment"># Find common elements in both arrays</span>
+np.setdiff1d(arr1, arr2)     <span class="comment"># Find elements in arr1 that are not in arr2</span>
+np.union1d(arr1, arr2)       <span class="comment"># Find union of elements from both arrays</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Reshaping, Combining, Splitting</h2>
+        </div>
+        <div class="section-description">
+            Functions to change array shapes, stack multiple arrays together, or split arrays into smaller segments.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>arr.reshape(2, 3)                      <span class="comment"># Reshape array to dimensions (2,3)</span>
+arr.flatten()                          <span class="comment"># Flatten multi-dimensional array to 1D (copy)</span>
+arr.ravel()                            <span class="comment"># Flatten array (view if possible)</span>
+arr.T                                  <span class="comment"># Transpose array</span>
+np.vstack([arr1, arr2])                <span class="comment"># Stack arrays vertically</span>
+np.hstack([arr1, arr2])                <span class="comment"># Stack arrays horizontally</span>
+np.concatenate([arr1, arr2], axis=0)   <span class="comment"># Concatenate arrays along first axis</span>
+np.split(arr, 3)                       <span class="comment"># Split array into 3 equal parts</span>
+np.array_split(arr, 3)                 <span class="comment"># Split array into 3 parts (handles uneven splits)</span>
+np.hsplit(arr, 2)                      <span class="comment"># Split array horizontally into 2 parts</span>
+np.vsplit(arr, 2)                      <span class="comment"># Split array vertically into 2 parts</span>
+np.expand_dims(arr, axis=0)            <span class="comment"># Add new axis at position 0</span>
+np.squeeze(arr)                        <span class="comment"># Remove single-dimensional entries</span>
+np.tile(arr, (2, 2))                   <span class="comment"># Construct array by repeating arr in a 2x2 pattern</span>
+np.repeat(arr, 2)                      <span class="comment"># Repeat elements of array</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Linear Algebra</h2>
+        </div>
+        <div class="section-description">
+            Functions for performing linear algebra operations on arrays, including matrix multiplication, decomposition, and solving linear systems.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.dot(arr1, arr2)           <span class="comment"># Dot product of arrays</span>
+np.matmul(arr1, arr2)         <span class="comment"># Matrix multiplication</span>
+np.linalg.inv(arr)            <span class="comment"># Compute inverse of a matrix</span>
+np.linalg.det(arr)            <span class="comment"># Compute determinant of a matrix</span>
+np.linalg.eig(arr)            <span class="comment"># Compute eigenvalues and eigenvectors</span>
+np.linalg.eigh(arr)           <span class="comment"># Eigenvalues and eigenvectors of Hermitian matrix</span>
+np.linalg.svd(arr)            <span class="comment"># Singular value decomposition</span>
+np.linalg.solve(A, b)         <span class="comment"># Solve linear system Ax = b</span>
+np.trace(arr)                 <span class="comment"># Sum of diagonal elements</span>
+np.linalg.norm(arr)           <span class="comment"># Calculate norm of matrix or vector</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Random</h2>
+        </div>
+        <div class="section-description">
+            Functions for generating random numbers and performing random sampling from various probability distributions.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.random.seed(0)                    <span class="comment"># Set random seed for reproducibility</span>
+np.random.rand(2, 3)                 <span class="comment"># Random values between 0-1 in a 2x3 array</span>
+np.random.randn(2, 3)                <span class="comment"># Random values from standard normal distribution</span>
+np.random.randint(0, 10, (2, 3))     <span class="comment"># Random integers from 0-9 in a 2x3 array</span>
+np.random.choice(arr, size=3)        <span class="comment"># Randomly select 3 elements from array</span>
+np.random.shuffle(arr)               <span class="comment"># Shuffle array in-place</span>
+np.random.permutation(arr)           <span class="comment"># Return a shuffled copy of array</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Statistics</h2>
+        </div>
+        <div class="section-description">
+            Functions for computing statistical measures on arrays, such as mean, median, correlation, and covariance.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.mean(arr)                <span class="comment"># Calculate mean of all elements</span>
+np.median(arr)              <span class="comment"># Calculate median of all elements</span>
+np.var(arr)                 <span class="comment"># Calculate variance</span>
+np.std(arr)                 <span class="comment"># Calculate standard deviation</span>
+np.percentile(arr, 25)      <span class="comment"># Calculate 25th percentile (first quartile)</span>
+np.corrcoef(arr1, arr2)     <span class="comment"># Calculate correlation coefficient</span>
+np.cov(arr1, arr2)          <span class="comment"># Calculate covariance matrix</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Missing Values</h2>
+        </div>
+        <div class="section-description">
+            Functions for handling missing or invalid data (NaN values) in NumPy arrays, allowing for robust calculations.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.isnan(arr)              <span class="comment"># Test element-wise for NaN</span>
+np.isfinite(arr)           <span class="comment"># Test element-wise for finite numbers</span>
+np.nan_to_num(arr)         <span class="comment"># Replace NaN with zero and infinity with large numbers</span>
+np.nanmean(arr)            <span class="comment"># Calculate mean ignoring NaNs</span>
+np.nansum(arr)             <span class="comment"># Calculate sum ignoring NaNs</span>
+np.nanstd(arr)             <span class="comment"># Calculate standard deviation ignoring NaNs</span>
+np.nanmin(arr)             <span class="comment"># Find minimum value ignoring NaNs</span>
+np.nanmax(arr)             <span class="comment"># Find maximum value ignoring NaNs</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>File I/O</h2>
+        </div>
+        <div class="section-description">
+            Functions for reading and writing NumPy arrays to different file formats, including text, binary, and compressed formats.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.loadtxt('file.txt')                         <span class="comment"># Load data from text file</span>
+np.savetxt('file.txt', arr)                    <span class="comment"># Save array to text file</span>
+np.genfromtxt('file.csv', delimiter=',')      <span class="comment"># Load data from CSV file with flexible handling</span>
+np.save('file.npy', arr)                      <span class="comment"># Save array to .npy binary file</span>
+np.load('file.npy')                           <span class="comment"># Load array from .npy file</span>
+np.savez('file.npz', arr1=arr1, arr2=arr2)    <span class="comment"># Save multiple arrays to .npz file</span>
+np.load('file.npz')                           <span class="comment"># Load multiple arrays from .npz file</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <h2>Special Functions</h2>
+        </div>
+        <div class="section-description">
+            Specialized functions for working with arrays, including mesh grid generation and operations on diagonal or triangular matrices.
+        </div>
+        <div class="section-body">
+            <div class="code-container">
+                <button class="copy-btn" title="Copy to clipboard">
+                    <span class="copy-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </span>
+                </button>
+                <pre><code>np.meshgrid(x, y)           <span class="comment"># Create coordinate matrices from coordinate vectors</span>
+np.mgrid[0:5, 0:5]          <span class="comment"># Create dense meshgrid with even spacing</span>
+np.ogrid[0:5, 0:5]          <span class="comment"># Create open meshgrid for efficient computations</span>
+np.diag([1,2,3])            <span class="comment"># Create diagonal matrix or extract diagonal</span>
+np.tril(arr)                <span class="comment"># Get lower triangular part of a matrix</span>
+np.triu(arr)                <span class="comment"># Get upper triangular part of a matrix</span>
+np.trace(arr)               <span class="comment"># Sum along the diagonal</span></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h2>NumPy - The Foundation for Scientific Computing in Python</h2>
+        <p>Everything you need in one place</p>
+    </div>
+</div>
+
+</body>
+</html>
